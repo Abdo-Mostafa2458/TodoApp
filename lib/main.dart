@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/AppRoute/app_routes.dart';
+import 'package:todo_app/AppTheme/my_theme_data.dart';
 import 'package:todo_app/home_screen.dart';
 
 void main() {
@@ -13,7 +14,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       routes: {AppRoutes.homeScreen: (context) => HomeScreen()},
+      theme: myThemeData.appThemeLight,
+      darkTheme: myThemeData.appThemeDark,
+      themeMode: ThemeMode.system,
       initialRoute: AppRoutes.homeScreen,
     );
   }
