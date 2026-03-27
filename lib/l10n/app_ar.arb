@@ -1,0 +1,16 @@
+{
+  "title": "قائمة المهام اليومية",
+  "list": "القائمة",
+  "settings": "الاعدادات",
+  "language": "اللغة",
+  "mode": "المود",
+  "english": "انجليزي",
+  "arabic": "عربي",
+  "light": "فاتح",
+  "dark": "غامق",
+  "add_task_title": "إضافة مهمة جديدة",
+  "new_task_title": "العنوان",
+  "description": "أبدا بالكتابة",
+  "select_date": "اختار التاريخ :",
+  "add_bottom": "اضافة مهمة"
+}

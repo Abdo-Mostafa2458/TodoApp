@@ -1,27 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_app/AppColors/app_colors.dart';
 import 'package:todo_app/Home_Screen_Widget/List_tab_widgets/list_tab.dart';
+import 'package:todo_app/Home_Screen_Widget/custom_bottom_navigation_app_ber.dart';
+import 'package:todo_app/Home_Screen_Widget/custom_floating_action_bottom.dart';
 import 'package:todo_app/Home_Screen_Widget/settings_tab_widget/settings_tab.dart';
 import 'package:todo_app/MediaQuery/media_quary.dart';
+import 'package:todo_app/Provider/provider.dart';
 
-class HomeScreen extends StatefulWidget {
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  int selectedIndex = 0;
-
+class HomeScreen extends StatelessWidget {
   // List<Widget> tabs=[
-  //   ListTab(),
-  //   SettingsTab()
-  // ];
-
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<AppHomeScreen>(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text("To Do List"),
+        title: Text(AppLocalizations.of(context)!.title),
       ),
       body: Column(
         children: [
@@ -35,42 +31,14 @@ class _HomeScreenState extends State<HomeScreen> {
               width: double.infinity,
               height: double.infinity,
               // child: tabs[selectedIndex],
-              child: selectedIndex == 0 ? ListTab() : SettingsTab(),
+              child: provider.selectedIndex == 0 ? ListTab() : SettingsTab(),
             ),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: Icon(
-          Icons.add,
-          color: AppColorsLight.whiteColor,
-          size: 35,
-        ),
-      ),
+      floatingActionButton: CustomFloatingActionBottom(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomAppBar(
-        notchMargin: 10,
-        child: BottomNavigationBar(
-            currentIndex: selectedIndex,
-            onTap: (index) {
-              setState(() {
-                print("index :$index");
-                selectedIndex = index;
-                print("selectedIndex:$selectedIndex");
-              });
-            },
-            items: [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.list),
-                label: 'List',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.settings),
-                label: 'Settings',
-              ),
-            ]),
-      ),
+      bottomNavigationBar: CustomBottomNavigationAppBer(),
     );
   }
 }
