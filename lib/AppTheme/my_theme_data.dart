@@ -43,6 +43,7 @@ class myThemeData {
               side: BorderSide(color: AppColorsLight.whiteColor, width: 4))),
       bottomAppBarTheme: BottomAppBarTheme(
         padding: EdgeInsets.all(2),
+        color: AppColorsLight.whiteColor,
         shape: const CircularNotchedRectangle(),
       ),
       datePickerTheme: DatePickerThemeData(

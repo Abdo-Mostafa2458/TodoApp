@@ -42,3 +42,21 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
+// Column(
+// children: [
+// Container(
+// width: double.infinity,
+// height: getHeight(0.10, context),
+// color: AppColorsLight.appbarBlueColor,
+// ),
+//
+// Expanded(
+// child: Container(
+// width: double.infinity,
+// height: double.infinity,
+// // child: tabs[selectedIndex],
+// child: provider.selectedIndex == 0 ? ListTab() : SettingsTab(),
+// ),
+// ),
+// ],
+// )
