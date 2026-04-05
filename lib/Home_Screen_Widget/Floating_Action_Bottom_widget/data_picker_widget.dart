@@ -5,6 +5,8 @@ import 'package:todo_app/AppColors/app_colors.dart';
 import 'package:todo_app/Home_Screen_Widget/Floating_Action_Bottom_widget/custom_text_form_field.dart';
 import 'package:todo_app/MediaQuery/media_quary.dart';
 import 'package:todo_app/Provider/provider.dart';
+import 'package:todo_app/firebase/Task.dart';
+import 'package:todo_app/firebase/firebase_utils.dart';
 
 class DataPickerWidget extends StatefulWidget {
   const DataPickerWidget({super.key});
@@ -16,6 +18,8 @@ class DataPickerWidget extends StatefulWidget {
 class _DataPickerWidgetState extends State<DataPickerWidget> {
   DateTime pickedDate = DateTime.now();
   var formKey = GlobalKey<FormState>();
+  TextEditingController titleTask = TextEditingController();
+  TextEditingController descriptionTask = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -43,11 +47,13 @@ class _DataPickerWidgetState extends State<DataPickerWidget> {
               hintText: AppLocalizations.of(context)!.add_task_title,
               verticalPadding: 10,
               errorText: "Please Enter Task Title",
+              controller: titleTask,
             ),
             CustomTextFormField(
               hintText: AppLocalizations.of(context)!.description,
               verticalPadding: 50,
               errorText: "Please Enter Task Description",
+              controller: descriptionTask,
             ),
             Padding(
               // padding: const EdgeInsets.all(12.0),
@@ -84,11 +90,27 @@ class _DataPickerWidgetState extends State<DataPickerWidget> {
                           WidgetStatePropertyAll(Colors.blueAccent),
                       shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(5))))),
-                  onPressed: () {
+                  onPressed: () async {
+                    print("Button Clicked 🔥");
+
                     if (formKey.currentState!.validate()) {
+                      print("Form Valid ✅");
+
+                      Task task = Task(
+                        title: titleTask.text,
+                        description: descriptionTask.text,
+                        dateTime: pickedDate,
+                      );
+
+                      await FirebaseUtils.addTaskToFireStore(task);
+
+                      print("Task Added 🔥");
+
                       if (mounted) {
-                        //add Task
+                        Navigator.pop(context);
                       }
+                    } else {
+                      print("Form NOT Valid ❌");
                     }
                   },
                   child: Text(
@@ -135,3 +157,27 @@ class _DataPickerWidgetState extends State<DataPickerWidget> {
     }
   }
 }
+/*
+* onPressed: () async {
+                    print("Button Clicked 🔥");
+
+                    if (formKey.currentState!.validate()) {
+                      print("Form Valid ✅");
+
+                      Task task = Task(
+                        title: titleTask.text,
+                        description: descriptionTask.text,
+                        dateTime: pickedDate,
+                      );
+
+                      await FirebaseUtils.addTaskToFireStore(task);
+
+                      print("Task Added 🔥");
+
+                      if (mounted) {
+                        Navigator.pop(context);
+                      }
+                    } else {
+                      print("Form NOT Valid ❌");
+                    }
+                  }*/

@@ -37,7 +37,7 @@ class ListTab extends StatelessWidget {
         Expanded(
           child: ListView.builder(
             itemBuilder: (context, index) => CustomTicketPicked(),
-            itemCount: 15,
+            itemCount: 2,
             scrollDirection: Axis.vertical,
           ),
         )
@@ -45,6 +45,7 @@ class ListTab extends StatelessWidget {
     );
   }
 }
+
 // Stack(
 // children: [
 // Column(
