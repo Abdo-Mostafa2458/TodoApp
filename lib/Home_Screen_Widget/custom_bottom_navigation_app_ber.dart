@@ -6,7 +6,7 @@ import 'package:todo_app/Provider/provider.dart';
 class CustomBottomNavigationAppBer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<AppHomeScreen>(context);
+    var provider = Provider.of<AppBottomNavigationBar>(context);
     return BottomAppBar(
       notchMargin: 10,
       child: BottomNavigationBar(

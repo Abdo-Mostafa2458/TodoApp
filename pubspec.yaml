@@ -38,6 +38,7 @@ dependencies:
 
   google_fonts: ^6.3.0
 
+
   intl: any
   flutter_localizations:
     sdk: flutter
@@ -45,6 +46,7 @@ dependencies:
   easy_date_timeline: ^1.0.3
   firebase_core: ^2.24.2
   cloud_firestore: ^4.13.6
+
 
 dev_dependencies:
   flutter_test:

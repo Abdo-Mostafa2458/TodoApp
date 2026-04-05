@@ -23,8 +23,14 @@ void main() async {
       create: (context) => AppSettings(),
     ),
     ChangeNotifierProvider(
-      create: (context) => AppHomeScreen(),
-    )
+      create: (context) => AppBottomNavigationBar(),
+    ),
+    ChangeNotifierProvider(
+      create: (context) => AppFireBase(),
+    ),
+    ChangeNotifierProvider(
+      create: (context) => AppDataPicker(),
+    ),
   ], child: MyApp()));
 }
 

@@ -13,7 +13,7 @@ class HomeScreen extends StatelessWidget {
   // List<Widget> tabs=[
   @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<AppHomeScreen>(context);
+    var provider = Provider.of<AppBottomNavigationBar>(context);
 
     return Scaffold(
       appBar: AppBar(
