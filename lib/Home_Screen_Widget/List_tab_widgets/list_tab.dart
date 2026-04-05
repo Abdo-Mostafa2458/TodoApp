@@ -1,16 +1,27 @@
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_app/Home_Screen_Widget/List_tab_widgets/custom_ticket_picked.dart';
+import 'package:todo_app/Provider/provider.dart';
 
 class ListTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    AppFireBase providerDataBase = Provider.of<AppFireBase>(context);
+    if (providerDataBase.taskList.isEmpty) {
+      providerDataBase.getAllTasks();
+    }
     return Column(
       children: [
         EasyDateTimeLine(
-          initialDate: DateTime.now(),
+          key: ValueKey(providerDataBase.pickedDate),
+          initialDate: providerDataBase.pickedDate,
           onDateChange: (selectedDate) {
             //`selectedDate` the new date selected.
+            providerDataBase.changePickedDate(selectedDate);
+            print("change date sucess");
+            // providerDataBase.getAllTasks();
+            print("add date task sucess");
           },
           headerProps: const EasyHeaderProps(
             monthPickerType: MonthPickerType.switcher,
@@ -36,8 +47,10 @@ class ListTab extends StatelessWidget {
         ),
         Expanded(
           child: ListView.builder(
-            itemBuilder: (context, index) => CustomTicketPicked(),
-            itemCount: 2,
+            itemBuilder: (context, index) => CustomTicketPicked(
+              task: providerDataBase.taskList[index],
+            ),
+            itemCount: providerDataBase.taskList.length,
             scrollDirection: Axis.vertical,
           ),
         )

@@ -3,14 +3,21 @@ import 'package:intl/intl.dart';
 
 import '../../AppColors/app_colors.dart';
 import '../../MediaQuery/media_quary.dart';
+import '../../firebase/Task.dart';
 
 class CustomTicketPicked extends StatelessWidget {
+  Task task;
+
+  CustomTicketPicked({required this.task});
+
   DateTime dateTime = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(getWidth(0.05, context)),
+      padding: EdgeInsets.symmetric(
+          horizontal: getWidth(0.06, context),
+          vertical: getHeight(0.02, context)),
       margin: EdgeInsets.only(
           top: getHeight(0.020, context),
           right: getWidth(0.020, context),
@@ -29,14 +36,36 @@ class CustomTicketPicked extends StatelessWidget {
             height: double.infinity,
             width: 5,
           ),
-          Container(
-            margin: EdgeInsets.only(right: 60, top: 20),
-            child: Column(
-              children: [
-                Text("Play basket ball"),
-                Text(
-                    "${dateTime.hour}:${dateTime.second} ${DateFormat('a').format(DateTime.now())}"),
-              ],
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.only(top: getHeight(0.01, context)),
+              padding:
+                  EdgeInsets.symmetric(horizontal: getWidth(0.05, context)),
+              child: Column(
+                children: [
+                  FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        task.title,
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      )),
+                  SizedBox(
+                    height: getHeight(0.002, context),
+                  ),
+                  FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(task.description,
+                          style: Theme.of(context).textTheme.bodySmall)),
+                  FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                          "${DateFormat('h:mm a').format(task.dateTime)}",
+                          style: Theme.of(context).textTheme.bodySmall)),
+
+                  // Text(
+                  //     "${dateTime.hour}:${dateTime.second} ${DateFormat('a').format(DateTime.now())}",style: Theme.of(context).textTheme.bodySmall,),
+                ],
+              ),
             ),
           ),
           ElevatedButton(

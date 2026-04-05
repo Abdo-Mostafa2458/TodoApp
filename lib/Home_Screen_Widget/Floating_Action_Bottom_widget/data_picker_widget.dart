@@ -8,22 +8,21 @@ import 'package:todo_app/Provider/provider.dart';
 import 'package:todo_app/firebase/Task.dart';
 import 'package:todo_app/firebase/firebase_utils.dart';
 
-class DataPickerWidget extends StatefulWidget {
-  const DataPickerWidget({super.key});
-
-  @override
-  State<DataPickerWidget> createState() => _DataPickerWidgetState();
-}
-
-class _DataPickerWidgetState extends State<DataPickerWidget> {
-  DateTime pickedDate = DateTime.now();
+class DataPickerWidget extends StatelessWidget {
   var formKey = GlobalKey<FormState>();
+
   TextEditingController titleTask = TextEditingController();
+
   TextEditingController descriptionTask = TextEditingController();
+  late AppFireBase providerDataBase;
+
+  late AppDataPicker providerDatePicked;
 
   @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<AppSettings>(context);
+    AppSettings provider = Provider.of<AppSettings>(context);
+    providerDataBase = Provider.of<AppFireBase>(context, listen: true);
+    providerDatePicked = Provider.of<AppDataPicker>(context, listen: true);
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(getHeight(0.012, context)),
@@ -74,7 +73,7 @@ class _DataPickerWidgetState extends State<DataPickerWidget> {
                         pickDate(context, provider.appLanguage);
                       },
                       child: Text(
-                        "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}",
+                        "${providerDatePicked.pickedDate.day}/${providerDatePicked.pickedDate.month}/${providerDatePicked.pickedDate.year}",
                         style: Theme.of(context).textTheme.bodyLarge,
                         textAlign: TextAlign.center,
                       ))
@@ -91,24 +90,29 @@ class _DataPickerWidgetState extends State<DataPickerWidget> {
                       shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(5))))),
                   onPressed: () async {
-                    print("Button Clicked 🔥");
-
+                    print("Button Clicked ");
                     if (formKey.currentState!.validate()) {
                       print("Form Valid ✅");
-
                       Task task = Task(
                         title: titleTask.text,
                         description: descriptionTask.text,
-                        dateTime: pickedDate,
+                        dateTime: providerDatePicked.pickedDate,
                       );
 
-                      await FirebaseUtils.addTaskToFireStore(task);
+                      await FirebaseUtils.addTaskToFireStore(task).timeout(
+                        Duration(seconds: 2),
+                        onTimeout: () {
+                          print("Task Added 🔥");
 
-                      print("Task Added 🔥");
+                          providerDataBase.changePickedDate(task.dateTime);
+                          // providerDataBase.getAllTasks();
+                          print("data changed : ${task.dateTime}");
+                          providerDatePicked.pickedDate =
+                              DateTime.now(); //to reset the date picker
 
-                      if (mounted) {
-                        Navigator.pop(context);
-                      }
+                          Navigator.pop(context);
+                        },
+                      );
                     } else {
                       print("Form NOT Valid ❌");
                     }
@@ -127,21 +131,21 @@ class _DataPickerWidgetState extends State<DataPickerWidget> {
   void pickDate(BuildContext context, String language) async {
     DateTime? selectedDate = await showDatePicker(
       context: context,
-      initialDate: pickedDate,
-      firstDate: pickedDate,
+      initialDate: providerDatePicked.pickedDate,
+      firstDate: DateTime.now(),
       lastDate: DateTime(2100),
       locale: Locale(language),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: ColorScheme.light(
-              primary: Colors.blue, // 🔵 الهيدر + اليوم المختار
-              onPrimary: Colors.white, // النص داخل الهيدر
-              onSurface: Colors.black, // باقي الأيام
+              primary: Colors.blue,
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
             ),
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
-                foregroundColor: Colors.blue, // لون OK و CANCEL
+                foregroundColor: Colors.blue,
               ),
             ),
           ),
@@ -151,12 +155,23 @@ class _DataPickerWidgetState extends State<DataPickerWidget> {
     );
 
     if (selectedDate != null) {
-      setState(() {
-        pickedDate = selectedDate;
-      });
+      DateTime now = DateTime.now();
+      DateTime finalDate = DateTime(
+        selectedDate.year,
+        selectedDate.month,
+        selectedDate.day,
+        now.hour, // الساعة الحالية
+        now.minute, // الدقيقة الحالية
+      );
+
+      // بنحدث الـ Providers بالوقت الجديد "المدمج"
+      providerDatePicked.changeSelectedDate(finalDate);
+      providerDataBase.changePickedDate(finalDate);
     }
+    // providerDataBase.changePickedDate(selectedDate);//---------------------------
   }
 }
+
 /*
 * onPressed: () async {
                     print("Button Clicked 🔥");

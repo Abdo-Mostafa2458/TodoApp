@@ -18,4 +18,15 @@ class FirebaseUtils {
     task.id = taskDocRef.id; //auto id
     return taskDocRef.set(task);
   }
+
+  static Future<List<Task>> getTasksFromFireStore() async {
+    QuerySnapshot<Task> querySnapshot =
+        await FirebaseUtils.getCollections().get();
+    //List<QueryDocumentSnapshot<T>> => List<Task>
+    return querySnapshot.docs
+        .map(
+          (doc) => doc.data(),
+        )
+        .toList(); //List <Task>
+  }
 }
