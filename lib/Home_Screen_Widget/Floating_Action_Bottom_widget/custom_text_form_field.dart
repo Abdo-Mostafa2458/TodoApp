@@ -7,9 +7,11 @@ class CustomTextFormField extends StatelessWidget {
   final String hintText;
   final String errorText;
   final double verticalPadding;
+  final TextEditingController controller;
 
   CustomTextFormField(
       {required this.hintText,
+      required this.controller,
       required this.verticalPadding,
       this.errorText = "The Text is Empty"});
 
@@ -33,6 +35,7 @@ class CustomTextFormField extends StatelessWidget {
           }
           return null;
         },
+        controller: controller,
       ),
     );
   }
