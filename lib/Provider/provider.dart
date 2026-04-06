@@ -43,12 +43,27 @@ class AppDataPicker extends ChangeNotifier {
 
 class AppFireBase extends ChangeNotifier {
   List<Task> taskList = [];
-  DateTime pickedDate = DateTime.now(); // selected date 5/4
+  DateTime pickedDate = DateTime.now();
+
+  // selected date 5/4
+  void changeIsDone(Task task,
+      {bool doneTask = false,
+      String title = "",
+      String description = '',
+      DateTime? dateTime}) async {
+    await FirebaseUtils.UpdateTasksFromFireStore(task, isDone: doneTask);
+    getAllTasks();
+  }
 
   void changePickedDate(DateTime newDate) {
     pickedDate = newDate;
     getAllTasks();
   }
+
+  // void updateTaskData(Task task)async{
+  //  await FirebaseUtils.UpdateTasksFromFireStore(task,isDone: true);
+  //  getAllTasks();
+  // }
 
   void getAllTasks() async {
     // get the Collection(Tasks)=>doucument(task)=>data and added to taskList
@@ -57,14 +72,15 @@ class AppFireBase extends ChangeNotifier {
     //fillter the tasks depends on selectedDate by user
     taskList = taskList.where(
       (task) {
-        if (pickedDate.day == task.dateTime.day &&
-            pickedDate.month == task.dateTime.month &&
-            pickedDate.year == task.dateTime.year) {
+        if (task.dateTime.day == pickedDate.day &&
+            task.dateTime.month == pickedDate.month &&
+            task.dateTime.year == pickedDate.year) {
           return true;
         }
         return false;
       },
     ).toList();
+
     //sort the tasks
     taskList.sort(
       (Task task_1, Task task_2) {
@@ -72,5 +88,24 @@ class AppFireBase extends ChangeNotifier {
       },
     );
     notifyListeners();
+  }
+
+  // void deleteTask(String taskId)async{
+  //
+  //
+  //     // CollectionReference<Task> taskCollection= await FirebaseUtils.getCollections();//Collection
+  //     //  taskCollection.doc(idTask).delete();
+  //     await FirebaseUtils.deleteTasksFromFireStore(taskId);
+  //
+  //
+  //
+  //  getAllTasks();
+  // }
+  void deleteTask(Task task) async {
+    // CollectionReference<Task> taskCollection= await FirebaseUtils.getCollections();//Collection
+    //  taskCollection.doc(idTask).delete();
+    await FirebaseUtils.deleteTasksFromFireStore(task);
+
+    getAllTasks();
   }
 }
