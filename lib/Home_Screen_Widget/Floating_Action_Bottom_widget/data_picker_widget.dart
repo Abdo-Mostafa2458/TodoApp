@@ -87,7 +87,7 @@ class DataPickerWidget extends StatelessWidget {
               margin: marginSelectedDate,
 
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                // mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Text(
                     AppLocalizations.of(context)!.select_date,

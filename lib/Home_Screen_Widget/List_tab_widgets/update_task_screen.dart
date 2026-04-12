@@ -37,8 +37,8 @@ class UpdateTaskScreen extends StatelessWidget {
             height: double.infinity,
             // padding: EdgeInsets.symmetric(vertical: 5),
             margin: EdgeInsets.only(
-                left: getWidth(0.10, context),
-                right: getWidth(0.10, context),
+                left: getWidth(0.030, context),
+                right: getWidth(0.030, context),
                 bottom: getHeight(0.20, context),
                 top: getHeight(0.05, context)),
             child: Card(
@@ -60,6 +60,7 @@ class UpdateTaskScreen extends StatelessWidget {
                   spacingTextForm_2: 40,
                   elevatedButtonText: "Edit",
                   onClicked: editFunction,
+                  spacingBetweenSelectedData: 50,
                 ),
               ),
             ),

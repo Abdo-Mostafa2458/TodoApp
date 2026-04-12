@@ -146,7 +146,8 @@ class CustomTaskPicked extends StatelessWidget {
                             color: AppColorsLight.blackColor),
                         SizedBox(width: getWidth(0.01, context)),
                         Text(
-                          DateFormat('h:mm a').format(task.dateTime),
+                          DateFormat('h:mm a')
+                              .format(providerDataBase.pickedDate),
                           style: Theme.of(context)
                               .textTheme
                               .bodySmall
@@ -178,7 +179,8 @@ class CustomTaskPicked extends StatelessWidget {
                   providerDataBase.editTaskData(task,
                       isDone: true,
                       title: task.title,
-                      description: task.description);
+                      description: task.description,
+                      dateTime: providerDataBase.pickedDate);
                 },
                 child: const Icon(
                   Icons.check_outlined,
