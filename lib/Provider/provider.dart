@@ -32,9 +32,7 @@ class AppBottomNavigationBar extends ChangeNotifier {
   }
 }
 
-class AppDataPicker extends ChangeNotifier {
 
-}
 
 class AppDataBase extends ChangeNotifier {
   List<Task> taskList = [];

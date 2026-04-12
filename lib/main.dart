@@ -28,9 +28,6 @@ void main() async {
     ChangeNotifierProvider(
       create: (context) => AppDataBase(),
     ),
-    ChangeNotifierProvider(
-      create: (context) => AppDataPicker(),
-    ),
   ], child: MyApp()));
 }
 
