@@ -1,13 +1,13 @@
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_app/Home_Screen_Widget/List_tab_widgets/custom_ticket_picked.dart';
+import 'package:todo_app/Home_Screen_Widget/List_tab_widgets/slider/custom_task_picked.dart';
 import 'package:todo_app/Provider/provider.dart';
 
 class ListTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    AppFireBase providerDataBase = Provider.of<AppFireBase>(context);
+    AppDataBase providerDataBase = Provider.of<AppDataBase>(context);
     if (providerDataBase.taskList.isEmpty) {
       providerDataBase.getAllTasks();
     }
@@ -47,7 +47,7 @@ class ListTab extends StatelessWidget {
         ),
         Expanded(
           child: ListView.builder(
-            itemBuilder: (context, index) => CustomTicketPicked(
+            itemBuilder: (context, index) => CustomTaskPicked(
               task: providerDataBase.taskList[index],
             ),
             itemCount: providerDataBase.taskList.length,

@@ -41,29 +41,41 @@ class AppDataPicker extends ChangeNotifier {
   }
 }
 
-class AppFireBase extends ChangeNotifier {
+class AppDataBase extends ChangeNotifier {
   List<Task> taskList = [];
   DateTime pickedDate = DateTime.now();
+  TextEditingController titleTask = TextEditingController();
+  TextEditingController descriptionTask = TextEditingController();
 
   // selected date 5/4
-  void changeIsDone(Task task,
-      {bool doneTask = false,
-      String title = "",
-      String description = '',
-      DateTime? dateTime}) async {
-    await FirebaseUtils.UpdateTasksFromFireStore(task, isDone: doneTask);
-    getAllTasks();
-  }
 
   void changePickedDate(DateTime newDate) {
     pickedDate = newDate;
     getAllTasks();
   }
 
-  // void updateTaskData(Task task)async{
-  //  await FirebaseUtils.UpdateTasksFromFireStore(task,isDone: true);
-  //  getAllTasks();
-  // }
+  void editTaskData(Task task,
+      {bool isDone = false,
+      String title = '',
+      String description = '',
+      DateTime? dateTime}) async {
+    await FirebaseUtils.UpdateTasksFromFireStore(task,
+            isDone: isDone,
+            title: title,
+            description: description,
+            dateTime: dateTime)
+        .timeout(
+      Duration(milliseconds: 5),
+      onTimeout: () {
+        getAllTasks();
+      },
+    );
+  }
+
+  void addTaskData(Task task) async {
+    await FirebaseUtils.addTaskToFireStore(task);
+    getAllTasks();
+  }
 
   void getAllTasks() async {
     // get the Collection(Tasks)=>doucument(task)=>data and added to taskList

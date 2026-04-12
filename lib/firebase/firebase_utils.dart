@@ -30,7 +30,6 @@ class FirebaseUtils {
         )
         .toList(); //List <Task>
   }
-
   // static Future<void> deleteTasksFromFireStore(String id) async {
   //   // QuerySnapshot<Task> querySnapshot = await FirebaseUtils.getCollections().get();
   //   //List<QueryDocumentSnapshot<T>> => List<Task>
@@ -39,16 +38,19 @@ class FirebaseUtils {
   //
   //
   // }
-  static Future<void> UpdateTasksFromFireStore(
-    Task task, {
-    bool isDone = false,
-    String title = '',
-    String description = '',
-  }) async {
-    // QuerySnapshot<Task> querySnapshot = await FirebaseUtils.getCollections().get();
-    //List<QueryDocumentSnapshot<T>> => List<Task>
-    CollectionReference<Task> taskCollection = getCollections(); //Collection
-    taskCollection.doc(task.id).update({'isDone': isDone});
+  static Future<void> UpdateTasksFromFireStore(Task task,
+      {bool isDone = false,
+      String title = '',
+      String description = '',
+      DateTime? dateTime}) async {
+    CollectionReference<Task> taskCollection = getCollections();
+    return taskCollection.doc(task.id).update({
+      'isDone': isDone,
+      'title': title,
+      'description': description,
+      'dateTime': dateTime?.millisecondsSinceEpoch ??
+          task.dateTime.millisecondsSinceEpoch,
+    });
   }
 
   static Future<void> deleteTasksFromFireStore(Task task) async {
