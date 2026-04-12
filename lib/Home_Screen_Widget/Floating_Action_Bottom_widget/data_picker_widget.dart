@@ -6,33 +6,60 @@ import 'package:todo_app/Home_Screen_Widget/Floating_Action_Bottom_widget/custom
 import 'package:todo_app/MediaQuery/media_quary.dart';
 import 'package:todo_app/Provider/provider.dart';
 import 'package:todo_app/firebase/Task.dart';
-import 'package:todo_app/firebase/firebase_utils.dart';
+
+typedef elevBottonFun = void Function();
 
 class DataPickerWidget extends StatelessWidget {
+  String titleWidget;
+  String hintTextForm_1;
+  String hintTextForm_2;
+  String elevatedButtonText;
+  double spacingTextForm_1;
+  double spacingTextForm_2;
+  double spacingBetweenSelectedData;
+  elevBottonFun onClicked;
+  EdgeInsetsGeometry? paddingSelectedDate;
+  EdgeInsetsGeometry? marginSelectedDate;
+  EdgeInsetsGeometry? paddingWidgetDatePicker;
+
+  DataPickerWidget(
+      {this.titleWidget = '',
+      this.hintTextForm_1 = '',
+      this.hintTextForm_2 = '',
+      this.spacingTextForm_1 = 0,
+      this.spacingTextForm_2 = 0,
+      this.paddingSelectedDate,
+      this.spacingBetweenSelectedData = 0,
+      this.marginSelectedDate,
+      this.paddingWidgetDatePicker,
+      this.elevatedButtonText = '',
+      required this.onClicked});
+
   var formKey = GlobalKey<FormState>();
 
   TextEditingController titleTask = TextEditingController();
 
   TextEditingController descriptionTask = TextEditingController();
-  late AppFireBase providerDataBase;
+  late AppDataBase providerDataBase;
 
   late AppDataPicker providerDatePicked;
+  late Task task;
 
   @override
   Widget build(BuildContext context) {
     AppSettings provider = Provider.of<AppSettings>(context);
-    providerDataBase = Provider.of<AppFireBase>(context, listen: true);
-    providerDatePicked = Provider.of<AppDataPicker>(context, listen: true);
+    providerDataBase = Provider.of<AppDataBase>(context, listen: true);
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(getHeight(0.012, context)),
+      padding: paddingWidgetDatePicker,
       child: Form(
         key: formKey,
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              AppLocalizations.of(context)!.new_task_title,
+              titleWidget,
               textAlign: TextAlign.center,
               style: Theme.of(context)
                   .textTheme
@@ -43,82 +70,71 @@ class DataPickerWidget extends StatelessWidget {
               height: getHeight(0.050, context),
             ),
             CustomTextFormField(
-              hintText: AppLocalizations.of(context)!.add_task_title,
-              verticalPadding: 10,
+              hintText: hintTextForm_1,
+              verticalPadding: spacingTextForm_1,
               errorText: "Please Enter Task Title",
-              controller: titleTask,
+              controller: providerDataBase.titleTask,
             ),
             CustomTextFormField(
-              hintText: AppLocalizations.of(context)!.description,
-              verticalPadding: 50,
+              hintText: hintTextForm_2,
+              verticalPadding: spacingTextForm_2,
               errorText: "Please Enter Task Description",
-              controller: descriptionTask,
+              controller: providerDataBase.descriptionTask,
             ),
-            Padding(
+            Container(
               // padding: const EdgeInsets.all(12.0),
-              padding: EdgeInsets.all(getHeight(0.012, context)),
+              padding: paddingSelectedDate,
+              margin: marginSelectedDate,
 
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Text(
                     AppLocalizations.of(context)!.select_date,
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
-                  SizedBox(
-                    width: getWidth(0.10, context),
-                  ),
+                  // SizedBox(
+                  //   width: getWidth(0.10, context),
+                  // ),
                   TextButton(
                       onPressed: () {
                         pickDate(context, provider.appLanguage);
                       },
                       child: Text(
-                        "${providerDatePicked.pickedDate.day}/${providerDatePicked.pickedDate.month}/${providerDatePicked.pickedDate.year}",
+                        "${providerDataBase.pickedDate.day}/${providerDataBase.pickedDate.month}/${providerDataBase.pickedDate.year}",
                         style: Theme.of(context).textTheme.bodyLarge,
                         textAlign: TextAlign.center,
                       ))
                 ],
               ),
             ),
-            Padding(
+            Container(
               padding:
                   EdgeInsets.symmetric(vertical: getHeight(0.015, context)),
+              margin: marginSelectedDate,
               child: ElevatedButton(
                   style: ButtonStyle(
                       backgroundColor:
                           WidgetStatePropertyAll(Colors.blueAccent),
                       shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(5))))),
-                  onPressed: () async {
-                    print("Button Clicked ");
+                  onPressed: () {
+                    // isEditFun? editFun(task):addFun();
+                    // isEditFun? print('editfun'):Navigator.pop(context);
                     if (formKey.currentState!.validate()) {
-                      print("Form Valid ✅");
-                      Task task = Task(
-                        title: titleTask.text,
-                        description: descriptionTask.text,
-                        dateTime: providerDatePicked.pickedDate,
-                      );
-
-                      await FirebaseUtils.addTaskToFireStore(task).timeout(
-                        Duration(seconds: 2),
-                        onTimeout: () {
-                          print("Task Added 🔥");
-
-                          providerDataBase.changePickedDate(task.dateTime);
-                          // providerDataBase.getAllTasks();
-                          print("data changed : ${task.dateTime}");
-                          providerDatePicked.pickedDate =
-                              DateTime.now(); //to reset the date picker
-
-                          Navigator.pop(context);
-                        },
-                      );
+                      onClicked.call();
+                      Navigator.pop(context);
+                      //  FirebaseUtils.addTaskToFireStore(task);
+                      // providerDataBase.addTaskData(task);
+                      // print("Task Added 🔥");
+                      // providerDataBase.changePickedDate(task.dateTime);
+                      // providerDatePicked.pickedDate = DateTime.now();
                     } else {
                       print("Form NOT Valid ❌");
                     }
                   },
                   child: Text(
-                    AppLocalizations.of(context)!.add_bottom,
+                    elevatedButtonText,
                     style: Theme.of(context).textTheme.titleMedium,
                   )),
             )
@@ -128,10 +144,13 @@ class DataPickerWidget extends StatelessWidget {
     );
   }
 
-  void pickDate(BuildContext context, String language) async {
+  void pickDate(
+    BuildContext context,
+    String language,
+  ) async {
     DateTime? selectedDate = await showDatePicker(
       context: context,
-      initialDate: providerDatePicked.pickedDate,
+      initialDate: providerDataBase.pickedDate,
       firstDate: DateTime.now(),
       lastDate: DateTime(2100),
       locale: Locale(language),
@@ -165,11 +184,13 @@ class DataPickerWidget extends StatelessWidget {
       );
 
       // بنحدث الـ Providers بالوقت الجديد "المدمج"
-      providerDatePicked.changeSelectedDate(finalDate);
+      providerDataBase.changeSelectedDate(finalDate);
       providerDataBase.changePickedDate(finalDate);
     }
     // providerDataBase.changePickedDate(selectedDate);//---------------------------
   }
+
+
 }
 
 /*
