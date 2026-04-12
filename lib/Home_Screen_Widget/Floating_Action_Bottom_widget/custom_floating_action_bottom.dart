@@ -12,12 +12,9 @@ import 'data_picker_widget.dart';
 class CustomFloatingActionBottom extends StatelessWidget {
   late AppDataBase providerDataBase;
 
-  late AppDataPicker providerDatePicked;
-
   @override
   Widget build(BuildContext context) {
     providerDataBase = Provider.of<AppDataBase>(context, listen: true);
-    providerDatePicked = Provider.of<AppDataPicker>(context, listen: true);
     return FloatingActionButton(
       onPressed: () {
         dataPacker(context);
@@ -57,7 +54,7 @@ class CustomFloatingActionBottom extends StatelessWidget {
     Task task = Task(
       title: providerDataBase.titleTask.text, //abdo
       description: providerDataBase.descriptionTask.text, //should sleep
-      dateTime: providerDatePicked.pickedDate,
+      dateTime: providerDataBase.pickedDate,
     );
 
     FirebaseUtils.addTaskToFireStore(task).timeout(
@@ -68,8 +65,7 @@ class CustomFloatingActionBottom extends StatelessWidget {
         providerDataBase.changePickedDate(task.dateTime);
         // providerDataBase.getAllTasks();
         print("data changed : ${task.dateTime}");
-        providerDatePicked.pickedDate =
-            DateTime.now(); //to reset the date picker
+        providerDataBase.pickedDate = DateTime.now(); //to reset the date picker
         providerDataBase.titleTask.clear();
         providerDataBase.descriptionTask.clear();
 

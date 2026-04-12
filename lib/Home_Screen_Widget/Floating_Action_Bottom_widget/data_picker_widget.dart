@@ -6,7 +6,6 @@ import 'package:todo_app/Home_Screen_Widget/Floating_Action_Bottom_widget/custom
 import 'package:todo_app/MediaQuery/media_quary.dart';
 import 'package:todo_app/Provider/provider.dart';
 import 'package:todo_app/firebase/Task.dart';
-import 'package:todo_app/firebase/firebase_utils.dart';
 
 typedef elevBottonFun = void Function();
 
@@ -49,8 +48,7 @@ class DataPickerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AppSettings provider = Provider.of<AppSettings>(context);
-    providerDataBase = Provider.of<AppDataBase>(context, listen: false);
-    providerDatePicked = Provider.of<AppDataPicker>(context, listen: true);
+    providerDataBase = Provider.of<AppDataBase>(context, listen: true);
     return Container(
       width: double.infinity,
       padding: paddingWidgetDatePicker,
@@ -103,7 +101,7 @@ class DataPickerWidget extends StatelessWidget {
                         pickDate(context, provider.appLanguage);
                       },
                       child: Text(
-                        "${providerDatePicked.pickedDate.day}/${providerDatePicked.pickedDate.month}/${providerDatePicked.pickedDate.year}",
+                        "${providerDataBase.pickedDate.day}/${providerDataBase.pickedDate.month}/${providerDataBase.pickedDate.year}",
                         style: Theme.of(context).textTheme.bodyLarge,
                         textAlign: TextAlign.center,
                       ))
@@ -152,7 +150,7 @@ class DataPickerWidget extends StatelessWidget {
   ) async {
     DateTime? selectedDate = await showDatePicker(
       context: context,
-      initialDate: providerDatePicked.pickedDate,
+      initialDate: providerDataBase.pickedDate,
       firstDate: DateTime.now(),
       lastDate: DateTime(2100),
       locale: Locale(language),
@@ -186,54 +184,13 @@ class DataPickerWidget extends StatelessWidget {
       );
 
       // بنحدث الـ Providers بالوقت الجديد "المدمج"
-      providerDatePicked.changeSelectedDate(finalDate);
+      providerDataBase.changeSelectedDate(finalDate);
       providerDataBase.changePickedDate(finalDate);
     }
     // providerDataBase.changePickedDate(selectedDate);//---------------------------
   }
 
-  void addFun() {
-    print("add function ");
-    print("Button Clicked ");
-    if (formKey.currentState!.validate()) {
-      print("Form Valid ✅");
-      Task task = Task(
-        title: titleTask.text,
-        description: descriptionTask.text,
-        dateTime: providerDatePicked.pickedDate,
-      );
 
-      FirebaseUtils.addTaskToFireStore(task).timeout(
-        Duration(seconds: 1),
-        onTimeout: () {
-          print("Task Added 🔥");
-
-          providerDataBase.changePickedDate(task.dateTime);
-          // providerDataBase.getAllTasks();
-          print("data changed : ${task.dateTime}");
-          providerDatePicked.pickedDate =
-              DateTime.now(); //to reset the date picker
-
-          // Navigator.pop(context);
-        },
-      );
-      //  FirebaseUtils.addTaskToFireStore(task);
-      // providerDataBase.addTaskData(task);
-      // print("Task Added 🔥");
-      // providerDataBase.changePickedDate(task.dateTime);
-      // providerDatePicked.pickedDate = DateTime.now();
-    } else {
-      print("Form NOT Valid ❌");
-    }
-  }
-
-  void editFun(Task task) async {
-    print("edit function");
-    print("Button Clicked ");
-    await FirebaseUtils.UpdateTasksFromFireStore(task,
-        isDone: false, title: '');
-    providerDataBase.getAllTasks();
-  }
 }
 
 /*

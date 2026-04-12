@@ -17,12 +17,9 @@ class UpdateTaskScreen extends StatelessWidget {
   var formKey = GlobalKey<FormState>();
   late AppDataBase providerDataBase;
 
-  late AppDataPicker providerDatePicked;
-
   @override
   Widget build(BuildContext context) {
     providerDataBase = Provider.of<AppDataBase>(context, listen: true);
-    providerDatePicked = Provider.of<AppDataPicker>(context, listen: true);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -80,7 +77,7 @@ class UpdateTaskScreen extends StatelessWidget {
     await FirebaseUtils.UpdateTasksFromFireStore(task,
             title: providerDataBase.titleTask.text,
             description: providerDataBase.descriptionTask.text,
-            dateTime: providerDatePicked.pickedDate)
+            dateTime: providerDataBase.pickedDate)
         .timeout(
       Duration(milliseconds: 5),
       onTimeout: () {

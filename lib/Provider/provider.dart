@@ -33,12 +33,7 @@ class AppBottomNavigationBar extends ChangeNotifier {
 }
 
 class AppDataPicker extends ChangeNotifier {
-  DateTime pickedDate = DateTime.now();
 
-  void changeSelectedDate(DateTime newPickedDate) {
-    pickedDate = newPickedDate;
-    notifyListeners();
-  }
 }
 
 class AppDataBase extends ChangeNotifier {
@@ -46,6 +41,11 @@ class AppDataBase extends ChangeNotifier {
   DateTime pickedDate = DateTime.now();
   TextEditingController titleTask = TextEditingController();
   TextEditingController descriptionTask = TextEditingController();
+
+  void changeSelectedDate(DateTime newPickedDate) {
+    pickedDate = newPickedDate;
+    notifyListeners();
+  }
 
   // selected date 5/4
 
