@@ -65,7 +65,7 @@ class CustomFloatingActionBottom extends StatelessWidget {
         providerDataBase.changePickedDate(task.dateTime);
         // providerDataBase.getAllTasks();
         print("data changed : ${task.dateTime}");
-        providerDataBase.pickedDate = DateTime.now(); //to reset the date picker
+        // providerDataBase.pickedDate = DateTime.now(); //to reset the date picker
         providerDataBase.titleTask.clear();
         providerDataBase.descriptionTask.clear();
 

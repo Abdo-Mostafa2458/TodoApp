@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Task {
   //data Model
   static const String taskCollection = 'tasks';
@@ -7,22 +9,20 @@ class Task {
   DateTime dateTime;
   bool isDone;
 
-  Task(
-      {this.id = "",
-      required this.title,
-      required this.description,
-      required this.dateTime,
-      this.isDone = false});
+  Task({this.id = "",
+    required this.title,
+    required this.description,
+    required this.dateTime,
+    this.isDone = false});
 
   //from fireStore Map=>object object function (Map)
 
   Task.fromFireStore(Map<String, dynamic> dataJson)
       : this(
-            id: dataJson['id'] as String,
+      id: dataJson['id'] as String,
             title: dataJson['title'] as String,
             description: dataJson['description'] as String,
-            dateTime: DateTime.fromMillisecondsSinceEpoch(dataJson['dateTime'])
-                as DateTime,
+            dateTime: _parseDateTime(dataJson['dateTime']),
             isDone: dataJson['isDone'] as bool);
 
   //to fireStore Map=>object  Map function(object)
@@ -35,5 +35,18 @@ class Task {
       'dateTime': dateTime.millisecondsSinceEpoch,
       'isDone': isDone
     };
+  }
+
+  static DateTime _parseDateTime(dynamic rawDateTime) {
+    if (rawDateTime is int) {
+      return DateTime.fromMillisecondsSinceEpoch(rawDateTime);
+    }
+    if (rawDateTime is Timestamp) {
+      return rawDateTime.toDate();
+    }
+    if (rawDateTime is DateTime) {
+      return rawDateTime;
+    }
+    return DateTime.now();
   }
 }

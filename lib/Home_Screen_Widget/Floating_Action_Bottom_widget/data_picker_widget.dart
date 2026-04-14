@@ -148,11 +148,20 @@ class DataPickerWidget extends StatelessWidget {
     BuildContext context,
     String language,
   ) async {
+    final DateTime minDate = DateTime(2000, 1, 1);
+    final DateTime maxDate = DateTime(2100, 12, 31);
+    DateTime initialDate = providerDataBase.pickedDate;
+    if (initialDate.isBefore(minDate)) {
+      initialDate = minDate;
+    } else if (initialDate.isAfter(maxDate)) {
+      initialDate = maxDate;
+    }
+
     DateTime? selectedDate = await showDatePicker(
       context: context,
-      initialDate: providerDataBase.pickedDate,
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2100),
+      initialDate: initialDate,
+      firstDate: minDate,
+      lastDate: maxDate,
       locale: Locale(language),
       builder: (context, child) {
         return Theme(
@@ -183,9 +192,8 @@ class DataPickerWidget extends StatelessWidget {
         now.minute, // الدقيقة الحالية
       );
 
-      // بنحدث الـ Providers بالوقت الجديد "المدمج"
+      // Update only chosen date; list refresh happens after save.
       providerDataBase.changeSelectedDate(finalDate);
-      providerDataBase.changePickedDate(finalDate);
     }
     // providerDataBase.changePickedDate(selectedDate);//---------------------------
   }

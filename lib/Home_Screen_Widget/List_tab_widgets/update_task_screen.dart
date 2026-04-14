@@ -9,17 +9,32 @@ import '../../MediaQuery/media_quary.dart';
 import '../../firebase/Task.dart';
 import '../../firebase/firebase_utils.dart';
 
-class UpdateTaskScreen extends StatelessWidget {
+class UpdateTaskScreen extends StatefulWidget {
   final Task task;
 
-  UpdateTaskScreen({required this.task});
+  const UpdateTaskScreen({super.key, required this.task});
 
-  var formKey = GlobalKey<FormState>();
+  @override
+  State<UpdateTaskScreen> createState() => _UpdateTaskScreenState();
+}
+
+class _UpdateTaskScreenState extends State<UpdateTaskScreen> {
   late AppDataBase providerDataBase;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      providerDataBase = Provider.of<AppDataBase>(context, listen: false);
+      // providerDataBase.titleTask.text = widget.task.title;
+      // providerDataBase.descriptionTask.text = widget.task.description;
+      providerDataBase.changeSelectedDate(widget.task.dateTime);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    providerDataBase = Provider.of<AppDataBase>(context, listen: true);
+    providerDataBase = Provider.of<AppDataBase>(context, listen: false);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -71,20 +86,13 @@ class UpdateTaskScreen extends StatelessWidget {
   }
 
   void editFunction() async {
-    print("${providerDataBase.titleTask.text}---------"); //  --------
-    print("edit function");
-    print("Button Clicked ");
-    // providerDataBase.editTaskData(task,title:providerDataBase.titleTask.text,description: providerDataBase.descriptionTask.text,dateTime:providerDatePicked.pickedDate );
-    await FirebaseUtils.UpdateTasksFromFireStore(task,
-            title: providerDataBase.titleTask.text,
-            description: providerDataBase.descriptionTask.text,
-            dateTime: providerDataBase.pickedDate)
-        .timeout(
-      Duration(milliseconds: 5),
-      onTimeout: () {
-        providerDataBase.getAllTasks();
-      },
+    await FirebaseUtils.UpdateTasksFromFireStore(
+      widget.task,
+      title: providerDataBase.titleTask.text,
+      description: providerDataBase.descriptionTask.text,
+      dateTime: providerDataBase.pickedDate,
     );
+    providerDataBase.changePickedDate(providerDataBase.pickedDate);
     providerDataBase.titleTask.clear();
     providerDataBase.descriptionTask.clear();
   }
