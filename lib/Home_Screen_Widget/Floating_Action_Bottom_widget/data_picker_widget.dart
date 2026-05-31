@@ -42,7 +42,6 @@ class DataPickerWidget extends StatelessWidget {
   TextEditingController descriptionTask = TextEditingController();
   late AppDataBase providerDataBase;
 
-  late AppDataPicker providerDatePicked;
   late Task task;
 
   @override
